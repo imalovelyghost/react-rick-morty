@@ -43,14 +43,14 @@ class Home extends Component {
   }
 
   async loadEpisodes(page) {
-    console.log(page);
+    // console.log(page);
     try {
       const { data } = await getEpisodes(page);
-      this.setState({
+      this.setState((prevState) => ({
         paginationInfo: data.info,
-        episodes: data.results,
+        episodes: [...prevState.episodes, ...data.results],
         hasLoaded: true,
-      });
+      }));
     } catch (error) {
       this.setState({
         hasLoaded: true,
