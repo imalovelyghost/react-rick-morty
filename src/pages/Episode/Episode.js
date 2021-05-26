@@ -8,11 +8,11 @@ class Episode extends Component {
     super(props);
 
     this.state = {
-      // episode: null,
-      characters: [],
-      // hasLoaded: false,
-      // hasError: false,
-      // errorMessage: null,
+       // episode: null,
+        characters: [],
+       hasLoaded: false,
+       hasError: false,
+       errorMessage: null,
     };
   
   }
@@ -20,12 +20,31 @@ class Episode extends Component {
   componentDidMount(){
     console.log(this.props)
   }
-
+  
   render() {
-    const { characters } = this.state;
+    const { characters,
+            hasLoaded,
+            hasError,
+            errorMessage
+          } = this.state;
     return (
       <Layout>
         <section className="row">
+        {hasLoaded && !hasError && (
+            <div className="col col-12">
+              <h1>Episodes loaded!</h1>
+            </div>
+          )} 
+           {!hasLoaded &&  (
+            <div className="col col-12">
+              <h1>Is loading , Wait!!</h1>
+            </div>
+          )} 
+          {hasError && (
+          <div className="col col-12"> 
+            <h1>{errorMessage}</h1>
+          </div>
+          )}
           <div className="col col-12">
             {characters.map((character) => (
               <CharacterCard

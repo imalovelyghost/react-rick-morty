@@ -6,8 +6,8 @@ import Episode from "./pages/Episode"
 
 
 function App() {
-  return <Home />;
-}
+  return (
+
 <Switch>
 <Route
     path={`${routes.EPISODE}/:episodeId`}
@@ -19,4 +19,5 @@ function App() {
   />
 
   </Switch>
+  )}
 export default App;

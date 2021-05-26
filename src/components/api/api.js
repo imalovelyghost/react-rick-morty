@@ -13,3 +13,7 @@ export function getEpisodesP(page =1, api=makeAPI()){
     return  api.get(`${rout.EPISODE}?page=${page}`)
 }
 
+// export function getEpisode(page =1, api=makeAPI()){
+
+//     return  api.get(`${rout.EPISODE}?page=${page}`)
+// }
