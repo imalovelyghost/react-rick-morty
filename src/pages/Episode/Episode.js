@@ -1,26 +1,27 @@
 import React, { Component } from "react";
 
 import Layout from "../../components/Layout";
-// import CharacterCard from "../../components/CharacterCard";
+import CharacterCard from "../../components/CharacterCard";
 
 class Episode extends Component {
   constructor(props) {
     super(props);
 
-    this.state = {};
-    // episode: null,
-    // characters: [],
-    // hasLoaded: false,
-    // hasError: false,
-    // errorMessage: null,
+    this.state = {
+      episode: null,
+      characters: [],
+      hasLoaded: false,
+      hasError: false,
+      errorMessage: null,
+    };
   }
-
+  
   render() {
     return (
       <Layout>
         <section className="row">
           <div className="col col-12">
-            {/* {characters.map((character) => (
+            {characters.map((character) => (
               <CharacterCard
                 key={character.id}
                 id={character.id}
@@ -31,7 +32,7 @@ class Episode extends Component {
                 origin={character.origin}
                 location={character.location}
               />
-            ))} */}
+            ))}
           </div>
         </section>
       </Layout>
