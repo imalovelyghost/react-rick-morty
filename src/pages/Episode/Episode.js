@@ -1,9 +1,14 @@
 import React, { Component } from "react";
+import axios from "axios";
 
 import Layout from "../../components/Layout";
 import CharacterCard from "../../components/CharacterCard";
 
-import { getEpisode } from "../../components/api";
+import { getEpisode, getUrl } from "../../components/api";
+
+function makePromises(urls = []) {
+  return urls.map((url) => getUrl(url));
+}
 
 class Episode extends Component {
   constructor(props) {
@@ -25,11 +30,33 @@ class Episode extends Component {
     const { match } = this.props;
     const { episodeId } = match.params;
 
-    console.log(episodeId)
+    // console.log(episodeId)
+    this.loadEpisode(episodeId);
   }
 
-  async loadEpisode() {
-    console.log(this);
+  async loadEpisode(episodeId) {
+    //  console.log(this);
+    try {
+      const { data } = await getEpisode(episodeId);
+      const promises = data.characters.map((character) => axios.get(character));
+
+      const charactersResponse = await Promise.all(promises);
+      const characters = charactersResponse.map((character) => character.data);
+      // console.log(data);
+      // console.log(charactersResponse);
+      // console.log(characters);
+      this.setState({
+        hasLoaded: true,
+        episode: data,
+        characters: characters,
+      });
+    } catch (error) {
+      this.setState({
+        hasLoaded: true,
+        hasError: true,
+        errorMessage: error.errorMessage,
+      });
+    }
   }
 
   render() {
