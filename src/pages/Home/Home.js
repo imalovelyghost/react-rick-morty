@@ -8,39 +8,64 @@ class Home extends Component {
     super(props);
 
     this.state = {
-      // page: 1,
-      // paginationInfo: null,
+      page: 1,
+      paginationInfo: null,
       episodes: [],
       hasLoaded: false,
       hasError: false,
-      // errorMessage: true,
+      errorMessage: "You do shit",
     };
+    this.loadNextPage=this.loadNextPage.bind(this)
   }
 
-  async componentDidMount() {
-    this.loadEpisodes();
+   componentDidMount() {
+    const {page}=this.state
+    this.loadEpisodes(page);
   }
   
-  async loadEpisodes() { 
+  componentDidUpdate(_prevProps, prevState){
+    const {page: prevPage} = prevState;
+    const {page} = this.state;
+    console.log({prevPage})
+    console.log({page})
+    if(prevPage !== page){
+      this.loadEpisodes(page);
+    }
+  }
+  
+  async loadEpisodes(page) { 
     try{
-    const {data} = await getEpisodesP();
-    const {results} = data;
-    this.setState({
-      episodes:results,
+    const {data} = await getEpisodesP(page);
+    const {results,info} = data;
+   
+    console.log(data)
+    this.setState((prevState)=>({
+      paginationInfo:info,
+      episodes:[...prevState.episodes,...results],
       hasLoaded:true,
-    })
+    }))
   }catch{
     this.setState({
       hasError:true,
     })
   }
   }
+  
+  loadNextPage(){
+    this.setState((prevState)=>({
+      page:prevState.page +1,
+    }))
+  }
 
   render() {
-      const{hasLoaded}=this.state;
-      const{hasError}=this.state;
-      const{episodes}=this.state;
-      // const{errorMessage}=this.state
+      const{
+        paginationInfo,
+        hasLoaded,
+        hasError,
+        episodes,
+        errorMessage
+      }=this.state;
+      
     return (
       <Layout>
         <section className="row">
@@ -49,12 +74,18 @@ class Home extends Component {
               <h1>Episodes loaded!</h1>
             </div>
           )} 
+           {!hasLoaded &&  (
+            <div className="col col-12">
+              <h1>Is loading , Wait!!</h1>
+            </div>
+          )} 
           {hasError && (
           <div className="col col-12"> 
-            <h1>ERrrrrroooooorr capullo</h1>
+            <h1>{errorMessage}</h1>
           </div>
           )}
-           {episodes.map((episode) => (
+           {episodes.length >0 &&
+           episodes.map((episode) => (
               <EpisodeCard
                 key={episode.id}
                 id={episode.id}
@@ -64,7 +95,7 @@ class Home extends Component {
               /> 
             ))}
           <div className="col col-12">
-            <hr />
+            <button className="btn btn-primary" type="button" disabled={paginationInfo && !paginationInfo.next} onClick={this.loadNextPage}>next page</button>
           </div>
         </section>
       </Layout>

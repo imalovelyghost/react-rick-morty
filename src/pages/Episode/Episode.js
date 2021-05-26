@@ -8,15 +8,21 @@ class Episode extends Component {
     super(props);
 
     this.state = {
-      episode: null,
+      // episode: null,
       characters: [],
-      hasLoaded: false,
-      hasError: false,
-      errorMessage: null,
+      // hasLoaded: false,
+      // hasError: false,
+      // errorMessage: null,
     };
-  }
   
+  }
+
+  componentDidMount(){
+    console.log(this.props)
+  }
+
   render() {
+    const { characters } = this.state;
     return (
       <Layout>
         <section className="row">
