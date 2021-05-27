@@ -17,11 +17,11 @@ export function getEpisode(episodeId, api = makeApi()) {
 
 // CHARACTERS
 
-export function getEpisodes(page = 1, api = makeApi()) {
+export function getCharacters(page = 1, api = makeApi()) {
   return api.get(`/character?page=${page}`);
 }
 
-export function getEpisode(characterId, api = makeApi()) {
+export function getCharacter(characterId, api = makeApi()) {
   return api.get(`/character/${characterId}`);
 }
 

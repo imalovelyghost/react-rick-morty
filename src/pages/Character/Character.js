@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 
-import { getEpisodes } from "../../components/api";
+import { getCharacters } from "../../components/api";
 import Layout from "../../components/Layout";
 import EpisodeCard from "../../components/EpisodeCard";
 
