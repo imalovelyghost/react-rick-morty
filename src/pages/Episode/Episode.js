@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-
+import { getEpisode } from "../../components/api/api";
 import Layout from "../../components/Layout";
 import CharacterCard from "../../components/CharacterCard";
 
@@ -14,13 +14,21 @@ class Episode extends Component {
        hasError: false,
        errorMessage: null,
     };
-  
+  this.loadEpisodes = this.loadEpisodes.bind(this);
   }
 
   componentDidMount(){
-    console.log(this.props)
+   const{match} = this.props;
+   const {episodeId} = match.params;
+   this.loadEpisodes(episodeId)
   }
   
+  async loadEpisodes(episode) { 
+   const {data}= await getEpisode(episode);
+   console.log(data);
+   console.log(this.props);
+  }
+
   render() {
     const { characters,
             hasLoaded,
