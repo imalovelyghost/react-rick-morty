@@ -1,8 +1,13 @@
 import React, { Component } from "react";
-import { getEpisode } from "../../components/api/api";
+import { getEpisode, getUrls } from "../../components/api/api";
 import Layout from "../../components/Layout";
 import CharacterCard from "../../components/CharacterCard";
 
+function makePromises(charactersUrls=[]){
+  return charactersUrls.map((characterUrl) =>getUrls(characterUrl) )
+
+
+}
 class Episode extends Component {
   constructor(props) {
     super(props);
@@ -19,14 +24,28 @@ class Episode extends Component {
 
   componentDidMount(){
    const{match} = this.props;
+   console.log(match)
    const {episodeId} = match.params;
    this.loadEpisodes(episodeId)
   }
   
   async loadEpisodes(episode) { 
+    try{
    const {data}= await getEpisode(episode);
-   console.log(data);
-   console.log(this.props);
+   const chacactersCall=await Promise.all(makePromises(data.characters))
+   const dataCharacters=chacactersCall.map((caracter) => caracter.data)
+   console.log(dataCharacters)
+   this.setState({
+    characters:dataCharacters,
+    hasLoaded:true,
+    hasError:false
+    })
+    }catch{
+    this.setState({
+      
+      hasError:true
+    })
+    }
   }
 
   render() {
