@@ -13,10 +13,8 @@ class Location extends Component {
       super(props);
   
       this.state = {
-       locations:[],
-    //    locationN:"",
-    //    locationD:"",
-    //    locationT:"",
+       residents:[],
+       location:null,
        hasLoaded: false,
        hasError: false,
        errorMessage: null,
@@ -30,34 +28,41 @@ class Location extends Component {
         
         console.log(match);
         console.log(locationId);
-         this.loadEpisodes(locationId)
+        this.loadEpisodes(locationId)
         }
        
-       
+     componentDidUpdate(){
+
+        console.log(this.state) 
+     }
+
     async loadEpisodes(location) { 
+        try{
         const {data}= await getLocation(location);
         const { name, type,dimension } = data;
         const residentsCall=await Promise.all(makePromises(data.residents))
         const dataResident=residentsCall.map((resident) => resident.data)
-     
-         console.log(data);
-         console.log(this);
+        console.log(name);
+        console.log(type);
+        console.log(dimension);
+        console.log(data);
          this.setState({
-            locations:dataResident,
-            // locationN:name,
-            // locationD:type,
-            // locationT:dimension,
-
-         })
-        
-       }
+            residents:dataResident,
+            location:data,
+            hasLoaded: true,
+            
+             })
+        }catch{
+            this.setState({
+                
+                hasError: true,
+                 })
+        }
+    }
 
 render() {
-    const { 
-            locations,
-            // locationN,
-            // locationD,
-            // locationT,
+    const { location,
+            residents,
             hasLoaded,
             hasError,
             errorMessage
@@ -67,6 +72,9 @@ render() {
         <section className="row">
         {hasLoaded && !hasError && (
             <div className="col col-12">
+                <h2>{location.name}</h2>
+                <h2>{location.type}</h2>
+                <h2>{location.dimension}</h2>
               <h1>Episodes loaded!</h1>
             </div>
           )} 
@@ -82,16 +90,16 @@ render() {
           )}
           <div className="col col-12">
              
-          {locations.map((location) => (
+          {residents.map((resident) => (
               <CharacterCard
-                key={location.id}
-                id={location.id}
-                name={location.name}
-                image={location.image}
-                species={location.species}
-                status={location.status}
-                origin={location.origin}
-                location={location.location}
+                key={resident.id}
+                id={resident.id}
+                name={resident.name}
+                image={resident.image}
+                species={resident.species}
+                status={resident.status}
+                origin={resident.origin}
+                location={resident.location}
                 // locationN={locationN}
                 // locationD={locationD}
                 // locationT={locationT}

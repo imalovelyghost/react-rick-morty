@@ -8,14 +8,9 @@ import * as routes from "../../constants/routes";
 
 
 function CharacterCard({ id, name, image, species, status, origin, location }) {
-
+  
   return (
     <div className="col col-12 col-sm-6 col-xl-3 CharacterCard">
-      {/*  <h4>{species}</h4>
-      <h4>{location}</h4>
-      <h4>{locationN}</h4>
-      <h4>{locationD}</h4>
-    <h4>{locationT}</h4> */}
       <img className="CharacterCard__img" src={image} alt="" />
       <Link to={`${routes.CHARACTER}/${id}`}>
         <h3 className="CharacterCard__name h4">{name}</h3>
