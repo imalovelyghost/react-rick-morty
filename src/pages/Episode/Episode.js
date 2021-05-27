@@ -20,6 +20,13 @@ class Episode extends Component {
       hasLoaded: false,
       hasError: false,
       errorMessage: null,
+      name:"",
+      image:"",
+      status:"",
+      species:"",
+      created:"",
+      location:"",
+      episodes:[],
     };
 
     this.loadEpisode = this.loadEpisode.bind(this);
@@ -59,6 +66,15 @@ class Episode extends Component {
         hasLoaded: true,
         episode: data,
         characters: characters,
+      episode: null,
+      characters: [],
+      name:data.name,
+      image:data.image,
+      status:data.status,
+      species:data.species,
+      created:data.created,
+      location:data.location,
+      episodes:[],
       });
     } catch (error) {
       this.setState({
@@ -68,42 +84,6 @@ class Episode extends Component {
       });
     }
   }
-
-  // async loadCharacter(characterId) {
-  //   console.log(this);
-  //   try {
-
-  //     const { datos } = await getCharacter(characterId);
-  //     console.log(datos);
-  //     console.log(characterId);
-
-  //     // const promises = data.characters.map((character) => axios.get(character));
-
-  //     // const charactersResponse = await Promise.all(
-  //     //   makePromises(data.characters),
-  //     // );
-  //     // const characters = charactersResponse.map((character) => character.data);
-  //     // // console.log(data);
-  //     // // console.log(charactersResponse);
-  //     // // console.log(characters);
-  //     // this.setState({
-  //     //   hasLoaded: true,
-  //     //   episode: data,
-  //     //   characters: characters,
-  //     // });
-  //   } catch (error) {
-  //     this.setState(
-  //     //   {
-  //     //   // hasLoaded: true,
-  //     //   // hasError: true,
-  //     //   // errorMessage: error.errorMessage,
-  //     // }
-  //     console.log("ERROR HERE")
-
-  //     );
-  //   }
-  // }
-  
 
   render() {
     const {
@@ -115,42 +95,42 @@ class Episode extends Component {
     } = this.state;
     return (
       <Layout>
-        <section className="row">
-          {!hasLoaded && (
-            <div className="col col-12">
-              <p>Episode not loaded...</p>
-            </div>
-          )}
-          {hasError && (
-            <div className="col col-12">
-              <p>Episode error...</p>
-              <p>{errorMessage}</p>
-            </div>
-          )}
+      <section className="row">
+        {!hasLoaded && (
+          <div className="col col-12">
+            <p>Character not loaded...</p>
+          </div>
+        )}
+        {hasError && (
+          <div className="col col-12">
+            <p>Character error...</p>
+            <p>{errorMessage}</p>
+          </div>
+        )}
+        <hr />
+        {/* {character && JSON.stringify(episode, null, 2)} */}
+        <hr />
+        {hasLoaded && (
+          <div className="col col-12">
+            <h4>Información de {name}</h4>
+            <img src={image} />
+            <h5>CHARACTER</h5>
+            <p>Estatus del personaje : {status}</p>
+            <p>Especie del personaje : {species}</p>
+            <p>Creación del personaje : {created}</p>
+            <h5>ORIGIN</h5>
+            <p>{origin}</p>
+            <h5>LOCATION</h5>
+            <p>{location}</p>
+            <h4>Episodios en los que aparece {name} :</h4>
+          </div>
+        )}
+        {episodes.length > 0 && <EpisodeList episodes={episodes} />}
+        <div className="col col-12">
           <hr />
-          {/* {episode && JSON.stringify(episode, null, 2)} */}
-          {hasLoaded && (
-            <div className="col col-12">
-              <h1>{episode.name}</h1>
-              <h1>{episode.air_date}</h1>
-            </div>
-          )}
-          <hr />
-          {characters.length > 0 &&
-            characters.map((character) => (
-              <CharacterCard
-                key={character.id}
-                id={character.id}
-                name={character.name}
-                image={character.image}
-                species={character.species}
-                status={character.status}
-                origin={character.origin}
-                location={character.location}
-              />
-            ))}
-        </section>
-      </Layout>
+        </div>
+      </section>
+    </Layout>
     );
   }
 }

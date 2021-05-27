@@ -1,125 +1,133 @@
 import React, { Component } from "react";
 
-import { getCharacters } from "../../components/api";
+import { getCharacter, getUrl } from "../../components/api";
 import Layout from "../../components/Layout";
-import EpisodeCard from "../../components/EpisodeCard";
+import CharacterCard from "../../components/CharacterCard";
+import EpisodeList from "../../components/EpisodeList";
 
-class Home extends Component {
+function makePromises(urls = []) {
+  return urls.map((url) => getUrl(url));
+}
+
+class Character extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      page: 1,
-      paginationInfo: null,
       episodes: [],
+      characters: [],
       hasLoaded: false,
       hasError: false,
       errorMessage: null,
+      name: "",
+      status: "",
+      species: "",
+      gender: "",
+      origin: "",
+      location: "",
+      image: "",
+      url: "",
+      created: "",
     };
-    this.loadEpisodes = this.loadEpisodes.bind(this);
-    this.loadNextPage = this.loadNextPage.bind(this);
+    this.loadCharacter = this.loadCharacter.bind(this);
   }
 
-  async componentDidMount() {
-    const { page } = this.state;
-    this.loadEpisodes(page);
+  componentDidMount() {
+    const { match } = this.props;
+    const { characterId } = match.params;
+    this.loadCharacter(characterId);
   }
 
-  componentDidUpdate(_prevProps, prevState) {
-    const { page: prevPage } = prevState;
-    const { page } = this.state;
-    //  const { page } = this.props;
-
-    // console.log(page)
-    // console.log(prevPage)
-
-    //   console.log({page})
-    // console.log({prevPage})
-    // console.log("---------------------")
-
-    if (prevPage !== page) {
-      this.loadEpisodes(page);
-    }
+  componentDidUpdate() {
+    console.log(this.state);
   }
 
-  async loadEpisodes(page) {
+  async loadCharacter(characterId) {
     // console.log(page);
     try {
-      const { data } = await getEpisodes(page);
+      const { data } = await getCharacter(characterId);
+      console.table(data);
 
-      this.setState((prevState) => ({
-        paginationInfo: data.info,
-        episodes: [...prevState.episodes, ...data.results],
+      const episodesResponse = await Promise.all(makePromises(data.episode));
+      const episodes = episodesResponse.map((episode) => episode.data);
+
+      this.setState({
         hasLoaded: true,
-      }));
+        episodes: episodes,
+        name: data.name,
+        status: data.status,
+        species: data.species,
+        gender: data.gender,
+        origin: data.origin.name,
+        location: data.location.name,
+        image: data.image,
+        url: data.url,
+        created: data.created,
+      });
     } catch (error) {
       this.setState({
         hasLoaded: true,
         hasError: true,
-        errorMessage: "Network ERROR",
+        errorMessage: error.errorMessage,
       });
     }
   }
 
-  loadNextPage() {
-    this.setState((prevState) => ({
-      page: prevState.page + 1,
-    }));
-  }
-
   render() {
     const {
-      paginationInfo,
       episodes,
       hasLoaded,
       hasError,
       errorMessage,
+      name,
+      status,
+      species,
+      gender,
+      origin,
+      location,
+      image,
+      episode,
+      url,
+      created,
     } = this.state;
 
     return (
       <Layout>
         <section className="row">
-          {hasLoaded && !hasError && (
+          {!hasLoaded && (
             <div className="col col-12">
-              <h1>Episodes loaded YAY :3!</h1>
+              <p>Character not loaded...</p>
             </div>
           )}
           {hasError && (
             <div className="col col-12">
-              <h1>Something went wrong......</h1>
+              <p>Character error...</p>
               <p>{errorMessage}</p>
             </div>
           )}
-          {!hasLoaded && (
+          <hr />
+          {/* {character && JSON.stringify(episode, null, 2)} */}
+          <hr />
+          {hasLoaded && (
+            
             <div className="col col-12">
-              <h1>Loading episodes...</h1>
+              <h4>Información de {name}</h4>
+              <img src={image} />
+              <h5>CHARACTER</h5>
+              <p>Estatus del personaje : {status}</p>
+              <p>Especie del personaje : {species}</p>
+              <p>Creación del personaje : {created}</p>
+              <h5>ORIGIN</h5>
+              <p>{origin}</p>
+              <h5>LOCATION</h5>
+              <p>{location}</p>
+              <h4>Episodios en los que aparece {name} :</h4>
             </div>
+           
           )}
+          {episodes.length > 0 && <EpisodeList episodes={episodes} />}
           <div className="col col-12">
             <hr />
-          </div>
-          {episodes.length > 0 &&
-            episodes.map((episode) => (
-              <EpisodeCard
-                key={episode.id}
-                id={episode.id}
-                name={episode.name}
-                airDate={episode.air_date}
-                episode={episode.episode}
-              />
-            ))}
-          <div className="col col-12">
-            <hr />
-          </div>
-          <div className="col col-12">
-            <button
-              className="btn btn-primary"
-              type="button"
-              disabled={paginationInfo && !paginationInfo.next}
-              onClick={this.loadNextPage}
-            >
-              Next Page
-            </button>
           </div>
         </section>
       </Layout>
@@ -127,4 +135,4 @@ class Home extends Component {
   }
 }
 
-export default Home;
+export default Character;
