@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import axios from "axios";
+// import axios from "axios";
 
 import Layout from "../../components/Layout";
 import CharacterCard from "../../components/CharacterCard";
@@ -34,13 +34,20 @@ class Episode extends Component {
     this.loadEpisode(episodeId);
   }
 
+  componentDidUpdate() {
+    console.log(this.state);
+  }
+
   async loadEpisode(episodeId) {
     //  console.log(this);
     try {
       const { data } = await getEpisode(episodeId);
-      const promises = data.characters.map((character) => axios.get(character));
+      console.log(data.characters);
+      // const promises = data.characters.map((character) => axios.get(character));
 
-      const charactersResponse = await Promise.all(promises);
+      const charactersResponse = await Promise.all(
+        makePromises(data.characters),
+      );
       const characters = charactersResponse.map((character) => character.data);
       // console.log(data);
       // console.log(charactersResponse);
@@ -82,9 +89,15 @@ class Episode extends Component {
             </div>
           )}
           <hr />
-          {episode && JSON.stringify(episode, null, 2)}
+          {/* {episode && JSON.stringify(episode, null, 2)} */}
+          {hasLoaded && (
+            <div className="col col-12">
+              <h1>{episode.name}</h1>
+              <h1>{episode.air_date}</h1>
+            </div>
+          )}
           <hr />
-          {characters.lenght > 0 &&
+          {characters.length > 0 &&
             characters.map((character) => (
               <CharacterCard
                 key={character.id}
